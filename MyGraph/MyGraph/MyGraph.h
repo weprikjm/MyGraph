@@ -1,67 +1,85 @@
 #include "MyLinkedList.h"
+#include "MyStack.h"
 
 template<class TYPE>
 class MyGraph
 {
 public:
+	template<typename TYPE>
 	struct GraphNode
 	{
 		TYPE data;
 
 		GraphNode(const TYPE& data) : data(data){ }
-		MyLinkedList<TYPE*> links;
+		MyLinkedList<GraphNode<TYPE>*> links;
 
-		void AddLink(GraphNode* n)
+		void AddLink(GraphNode<TYPE>* n)
 		{
-			links.PushBack(&n->data);
+			links.PushBack(n);
 		}
 	};
 
 	MyGraph(){ }
 	MyGraph(const MyGraph&){}
 	
-	GraphNode* CreateNode(const TYPE data)
+	GraphNode<TYPE>* CreateNode(const TYPE data)
 	{
 		//ListNode<TYPE>* node = new ListNode<TYPE>(data);
-		ListNode<GraphNode>* g = list.PushBack(data);
+		ListNode<GraphNode<TYPE>>* g = list.PushBack(data);
 		
 	
 		return &g->data;
 	}
 
-	bool isReachable(ListNode<GraphNode>* nodeToStart, ListNode<GraphNode>* nodeToReach)
+	bool isReachableIterative(GraphNode<TYPE>* nodeToStart, GraphNode<TYPE>* nodeToReach)
 	{
-		
-
 		if (nodeToStart == nodeToReach)
 			return true;
+		
+		MyStack<GraphNode<TYPE>*> openStack;
+		MyLinkedList<GraphNode<TYPE>*> closedList;
 
-		ListNode<GraphNode>* g = NULL;
+		GraphNode<TYPE>* g = NULL;
+		GraphNode<TYPE>* gTmp = NULL;
 
-		g = nodeToStart;
+		openStack.push_back(nodeToStart);
 
-		while (g)
+		ListNode<GraphNode<TYPE>*>* tmp;
+
+		if (nodeToStart->links.start != NULL)
+			tmp = nodeToStart->links.start;
+		else
+			return false;
+
+		g = tmp->data;
+
+		do
 		{
-			if (g == nodeToReach)
+			while (!g->links.Empty())
 			{
-				return true;
+				tmp = g->links.start;
+				while (tmp == closedList.FindNode(tmp))
+				{
+					tmp = tmp->next;
+				}
+				g = tmp->data;
+
+				openStack.push_back(g);
+
+				if (g == nodeToReach)
+				{
+					return true;
+				}
+			
 			}
 
-			g = g->next;
-		}
+			
+			closedList.PushBack(g);
 
-		for (int i = 0; i < )
-			if (g == nodeToReach)
-				return true;
-			else
-			{
-				isReachable();
-			}
+		} while (openStack.pop_back(g));
 
-
+		return false;
 	}
 
-
-
-	MyLinkedList<GraphNode> list;
+	MyLinkedList<GraphNode<TYPE>> list;
 };

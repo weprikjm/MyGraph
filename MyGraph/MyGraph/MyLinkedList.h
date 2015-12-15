@@ -207,20 +207,37 @@ public:
 	}
 
 
-	ListNode<TYPE>* FindNode(ListNode<TYPE>* pos)const
+	ListNode<TYPE>* FindNode(ListNode<TYPE>* data)const
 	{
 		if (start != NULL)
 		{
 			ListNode<TYPE>* tmpIterator = start;
 
-			for (int i = 1; i < pos; i++)
+			while (tmpIterator->data != data->data)
+			{
+				tmpIterator = tmpIterator->next;
+				if (tmpIterator == NULL)
+					return NULL;
+			}
+			
+			return data;
+		}
+	}
+	TYPE& FindNode(TYPE& data)const
+	{
+		if (start != NULL)
+		{
+			ListNode<TYPE>* tmpIterator = start;
+
+			while(tmpIterator->data != data)
 			{
 				tmpIterator = tmpIterator->next;
 			}
 
-			return tmpIterator;
+			return tmpIterator->data;
 		}
 	}
+
 
 
 
